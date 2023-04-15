@@ -10,6 +10,41 @@ name = "catz"
 SOURCES_ROOT = Path(__file__).parent.resolve()
 
 
+def print_curry_functions(n: int) -> str:
+    ret = f"""def curry{n}(func):"""
+
+    def print_body(res: str, i: int, tab_num: int):
+        tabs = "\t" * tab_num
+        res = f"""{res}\n{tabs}def wrap{i}(p{i}):"""
+        if i < n:
+            res = print_body(res, i + 1, tab_num + 1)
+        else:
+            return_str = ", ".join(map(lambda x: f"p{x + 1}", range(n)))
+            res = f"""{res}\n{tabs}\treturn func({return_str})"""
+        res = f"""{res}\n{tabs}return wrap{i}"""
+        return res
+
+    ret = print_body(ret, 1, 1)
+    return ret
+
+
+class GenerateCurryFunctions(Command):
+    user_options: list[str] = []
+
+    def initialize_options(self) -> None:
+        pass
+
+    def finalize_options(self) -> None:
+        pass
+
+    def run(self) -> None:
+        with open("./catz/common/functions.py", "w+") as f:
+            for i in range(50):
+                code_string = print_curry_functions(i + 2)
+                f.writelines(code_string)
+                f.write("\n")
+
+
 class CleanCommand(Command):
     user_options: list[str] = []
 
@@ -76,7 +111,8 @@ def do_setup():
             license="",
             author="manhdoi",
             cmdclass={
-                'clean': CleanCommand
+                'clean': CleanCommand,
+                "g_curry": GenerateCurryFunctions
             }
         )
 
