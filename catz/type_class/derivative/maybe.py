@@ -17,6 +17,9 @@ class Just(Maybe):
     def bind(self, kleisli_func, *args, **kwargs):
         return kleisli_func(self.value, *args, **kwargs)
 
+    def __repr__(self):
+        return f"Just {self.value}"
+
 
 class Nothing(Maybe):
 
@@ -28,3 +31,6 @@ class Nothing(Maybe):
 
     def bind(self, kleisli_func, *args, **kwargs):
         return self
+
+    def __repr__(self):
+        return "Nothing"

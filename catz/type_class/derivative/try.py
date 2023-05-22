@@ -1,3 +1,5 @@
+from typing import Callable
+
 from catz.type_class.core.monad import Monad
 
 
@@ -7,13 +9,23 @@ class Try(Monad):
 
     @classmethod
     def ret(cls, value):
-        return Try(value)
+        return cls(value)
 
     def fmap(self, func, *args, **kwargs):
         pass
 
     def bind(self, kleisli_func, *args, **kwargs):
         pass
+
+    @classmethod
+    def k_func(cls, func: Callable) -> Callable:
+        def wrap_func(*args, **kwargs):
+            try:
+                return Success.ret(func(*args, **kwargs))
+            except Exception as e:
+                return Error(e)
+
+        return wrap_func
 
 
 class Success(Try):
@@ -27,6 +39,9 @@ class Success(Try):
     def bind(self, kleisli_func, *args, **kwargs):
         return kleisli_func(self.value, *args, **kwargs)
 
+    def __repr__(self):
+        return f"Success: {self.value}"
+
 
 class Error(Try):
 
@@ -38,6 +53,9 @@ class Error(Try):
 
     def bind(self, kleisli_func, *args, **kwargs):
         return self
+
+    def __repr__(self):
+        return f"Error: {self.value}"
 
 
 def exception_handling(func):

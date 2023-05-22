@@ -12,3 +12,6 @@ class Functor:
 
     def fmap(self, f: Callable) -> 'Functor':
         pass
+
+    def get(self):
+        return self.value
