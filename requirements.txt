@@ -1,6 +1,5 @@
 attrs==22.1.0
-catz==0.0.1
-certifi @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_4d2o0arbv6/croot/certifi_1665076671099/work/certifi
+certifi==2022.12.7
 coverage==6.5.0
 exceptiongroup==1.0.4
 iniconfig==1.1.1
