@@ -42,6 +42,9 @@ class Success(Try):
     def __repr__(self):
         return f"Success: {self.value}"
 
+    def __eq__(self, other: 'Success'):
+        return self.value == other.value
+
 
 class Error(Try):
 
