@@ -14,6 +14,9 @@ class Try(Monad):
     def fmap(self, func, *args, **kwargs):
         pass
 
+    def fold(self, func_error, func_success):
+        pass
+
     def bind(self, kleisli_func, *args, **kwargs):
         pass
 
@@ -39,6 +42,9 @@ class Success(Try):
     def bind(self, kleisli_func, *args, **kwargs):
         return kleisli_func(self.value, *args, **kwargs)
 
+    def fold(self, func_error, func_success):
+        return func_success(self.value)
+
     def __repr__(self):
         return f"Success: {self.value}"
 
@@ -56,6 +62,9 @@ class Error(Try):
 
     def bind(self, kleisli_func, *args, **kwargs):
         return self
+
+    def fold(self, func_error, func_success):
+        return func_error(self.value)
 
     def __repr__(self):
         return f"Error: {self.value}"
