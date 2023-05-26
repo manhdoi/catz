@@ -1,5 +1,5 @@
 from unittest import TestCase, mock
-from catz.type_class.derivative.failure import exception_handling, Success, Error
+from catz.type_class.derivative.failure import exception_handling, Success, Error, Try
 
 
 class TestTry(TestCase):
@@ -20,3 +20,4 @@ class TestTry(TestCase):
 
         self.assertEqual(success(), Success("hello world"))
         self.assertIsInstance(error(), Error)
+        self.assertEqual(Try.ret(10).fmap(lambda x: x + 1), Success(11))

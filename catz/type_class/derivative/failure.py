@@ -9,7 +9,9 @@ class Try(Monad):
 
     @classmethod
     def ret(cls, value):
-        return cls(value)
+        if value is not Exception:
+            return Success(value)
+        return Error(value)
 
     def fmap(self, func, *args, **kwargs):
         pass
@@ -19,6 +21,12 @@ class Try(Monad):
 
     def bind(self, kleisli_func, *args, **kwargs):
         pass
+
+    def is_success(self):
+        return False
+
+    def is_error(self):
+        return False
 
     @classmethod
     def k_func(cls, func: Callable) -> Callable:
@@ -45,6 +53,9 @@ class Success(Try):
     def fold(self, func_error, func_success):
         return func_success(self.value)
 
+    def is_success(self):
+        return True
+
     def __repr__(self):
         return f"Success: {self.value}"
 
@@ -62,6 +73,9 @@ class Error(Try):
 
     def bind(self, kleisli_func, *args, **kwargs):
         return self
+
+    def is_error(self):
+        return True
 
     def fold(self, func_error, func_success):
         return func_error(self.value)
