@@ -3,6 +3,10 @@ from typing import Callable
 from catz.type_class.core.monad import Monad
 
 
+def throw(x):
+    raise x
+
+
 class Try(Monad):
     def __init__(self, value):
         super().__init__(value)
