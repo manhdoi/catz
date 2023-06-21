@@ -8,8 +8,12 @@ def throw(x):
 
 
 class Try(Monad):
-    def __init__(self, value):
-        super().__init__(value)
+    def __init__(self, func):
+        super().__init__(func)
+
+    def __call__(self, *args, **kwargs):
+        func = exception_handling(func=self.value)
+        return func(*args, **kwargs)
 
     @classmethod
     def ret(cls, value):
@@ -17,13 +21,13 @@ class Try(Monad):
             return Success(value)
         return Error(value)
 
-    def fmap(self, func, *args, **kwargs):
+    def fmap(self, func):
         pass
 
     def fold(self, func_error, func_success):
         pass
 
-    def bind(self, kleisli_func, *args, **kwargs):
+    def bind(self, kleisli_func):
         pass
 
     def is_success(self):
@@ -48,11 +52,15 @@ class Success(Try):
     def __init__(self, value):
         super().__init__(value)
 
-    def fmap(self, func, *args, **kwargs):
-        return Success(func(self.value, *args, **kwargs))
+    def fmap(self, func):
+        if func.__code__.co_argcount == 0:
+            return Success(func())
+        return Success(func(self.value))
 
-    def bind(self, kleisli_func, *args, **kwargs):
-        return kleisli_func(self.value, *args, **kwargs)
+    def bind(self, kleisli_func):
+        if kleisli_func.__code__.co_argcount == 0:
+            return kleisli_func()
+        return kleisli_func(self.value)
 
     def fold(self, func_error, func_success):
         return func_success(self.value)
@@ -72,10 +80,10 @@ class Error(Try):
     def __init__(self, exception):
         super().__init__(exception)
 
-    def fmap(self, func, *args, **kwargs):
+    def fmap(self, func):
         return self
 
-    def bind(self, kleisli_func, *args, **kwargs):
+    def bind(self, kleisli_func):
         return self
 
     def is_error(self):
