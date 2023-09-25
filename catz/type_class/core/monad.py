@@ -21,3 +21,22 @@ class Monad(Applicative):
             return cls.ret(func(*args, **kwargs))
 
         return wrap_func
+
+    def __iter__(self):
+        yield self.value
+
+    @classmethod
+    def subclasses(cls):
+        def subclasses_rec(c, result):
+            if c.__subclasses__():
+                for x in c.__subclasses__():
+                    if x.is_terminal():
+                        result.append(x)
+                    result = result + x.subclasses()
+            return result
+
+        return subclasses_rec(cls, [])
+
+    @classmethod
+    def is_terminal(cls):
+        return False
