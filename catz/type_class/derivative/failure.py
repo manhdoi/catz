@@ -74,6 +74,10 @@ class Success(Try):
     def __eq__(self, other: 'Success'):
         return self.value == other.value
 
+    @classmethod
+    def is_terminal(cls):
+        return True
+
 
 class Error(Try):
 
@@ -94,6 +98,10 @@ class Error(Try):
 
     def __repr__(self):
         return f"Error: {self.value}"
+
+    @classmethod
+    def is_terminal(cls):
+        return True
 
 
 def exception_handling(func):

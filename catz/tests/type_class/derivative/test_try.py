@@ -66,3 +66,17 @@ class TestTry(TestCase):
 
         result = reduce(lambda r, x: r.bind(lambda _: Try(hello)()), a, Try.ret(None))
         self.assertIsInstance(result, Success)
+
+    def test_do(self):
+        def void_function():
+            print("Hello, world!")
+
+        def ret_func():
+            return 1
+
+        def error_function():
+            raise Exception("File Not Found")
+
+        t1 = Try.ret(ret_func)
+        t2 = Try.ret(ret_func)
+        self.assertEqual(next(Try.ret(x() + y()) for x in t1 for y in t2), Try.ret(2))
